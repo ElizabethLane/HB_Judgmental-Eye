@@ -44,27 +44,37 @@ def load_movies():
     Movie.query.delete()
 
     for row in open("seed_data/u.item"):
+        #Strips the white space on the right side of the data. 
         row = row.rstrip()
+        #Creates a list by splitting on the pipe. 
         movie_info = row.split("|")
         
+        #Indexes the pipe to assign to desired variables. 
         movie_id = movie_info[0]
         title = movie_info[1]
+        title = title[:-6] #Gets rid of the date (1995)
         date = movie_info[2]
         imdb_url = movie_info[4]
 
+        #Checks if there is a date, if so, changes the string to a 
+        #datetime object. If not there, sets to None. 
         if date:
-            released_at=datetime.strptime(date, "%d-%b-%Y")
+            released_at = datetime.strptime(date, "%d-%b-%Y")
         else:
             released_at = None
 
-        
+        #Instantiating an object of the class Movie, assigning the data
+        #points that we extracted from the data file to each of the 
+        #attributes on the object from Movie class. 
         movie = Movie(movie_id=movie_id,
-                    title=title.rstrip("()"),
+                    title=title,
                     released_at=released_at,
                     imdb_url=imdb_url)
 
+        #Adds the row to the table. 
         db.session.add(movie)
 
+    #Adds all rows to the database
     db.session.commit()
 
 
@@ -77,7 +87,8 @@ def load_ratings():
 
     for row in open('seed_data/u.data'):
         row = row.rstrip()
-        ratings_info = row.split("\t")
+        ratings_info = row.split("\t") # Parsing the line
+        #needed to be split on a tab (\t) as opposed to space.
         
         user_id = ratings_info[0]
         movie_id = ratings_info[1]
