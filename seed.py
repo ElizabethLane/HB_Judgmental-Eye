@@ -52,7 +52,7 @@ def load_movies():
         #Indexes the pipe to assign to desired variables. 
         movie_id = movie_info[0]
         title = movie_info[1]
-        title = title[:-6] #Gets rid of the date (1995)
+        title = title[:-7] #Gets rid of the date (1995) AND the space after the last word in the title. 
         date = movie_info[2]
         imdb_url = movie_info[4]
 

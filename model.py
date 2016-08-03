@@ -24,7 +24,7 @@ class User(db.Model):
     zipcode = db.Column(db.String(15), nullable=True)
 
     def __repr__(self):
-        """Provide helpful represenation when printed"""
+        """Provide helpful representation when printed"""
 
         return "<User user_id = %s email = %s>" % (self.user_id, self.email)
 # Put your Movie and Rating model classes here.
@@ -34,23 +34,39 @@ class Movie(db.Model):
 
     __tablename__ = "movies"
 
-    movie_id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(400), nullable=False)
-    released_at = db.Column(db.DateTime(), nullable=True) #Ask about this in code review. String? 
-    imdb_url = db.Column(db.String(400), nullable=True)
+    movie_id = db.Column(db.Integer, autoincrement = True, primary_key=True) #has autoincrement set to true. 
+    title = db.Column(db.String(400), nullable=False) #doesnt have nullable parameter.
+    released_at = db.Column(db.DateTime(), nullable=True) #doesnt have nullable parameter. 
+    imdb_url = db.Column(db.String(400), nullable=True) #doesnt have nullable parameter. 
 
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<Movie movie_id=%s title=%s>" % (self.movie_id,
+                                                 self.title)
 
 class Rating(db.Model):
     """A rating for a ratings website."""
 
     __tablename__ = "ratings"
 
-    rating_id = db.Column(db.Integer, primary_key = True)
-    movie_id = db.Column(db.Integer, nullable = False)
-    user_id = db.Column(db.Integer, nullable = False)
-    score = db.Column(db.Integer, nullable = False)
+    rating_id = db.Column(db.Integer, autoincrement = True, primary_key = True) #has autoincrement set to true. 
+    movie_id = db.Column(db.Integer, nullable = False) #doesnt have nullable parameter.
+    user_id = db.Column(db.Integer, nullable = False) #doesnt have nullable parameter.
+    score = db.Column(db.Integer, nullable = False) #doesnt have nullable parameter.
 
+    #Define relatinoship to user. 
+    user = db.relationship("User", backref=db.backref("ratings",order_by=rating_id))
 
+    #Define relationship to movie.
+    movie = db.relationship("Movie", backref=db.backref("ratings", orders_by=rating_id))
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        s = "<Rating rating_id=%s movie_id=%s user_id=%s score=%s>"
+        return s % (self.rating_id, self.movie_id, self.user_id,
+                    self.score)
 
 ##############################################################################
 # Helper functions
