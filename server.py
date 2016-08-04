@@ -34,7 +34,36 @@ def user_list():
     #QUESTION: can you send lists through rendertemplate? Or does this need to turn to JSON object?
     return render_template("user_list.html", users=users)
 
-# @app.route('/register')
+@app.route('/register')
+def register_form():
+    
+    return render_template("register_form.html")
+
+@app.route("/register_form", methods=["POST"])
+def register_process():
+    #Get the username and password from the form.
+    email = request.form.get("email")
+    password = request.form.get("password")
+    #Add these values to the user table. 
+
+
+    #Query to see if the username is in the database.
+    user = User.query.filter(User.email == email)
+    print user
+
+    if user:
+        session["user"] = user.user_id
+        #add the user_id info to the flask session. user: user_id
+        #get the user_id from the user_id => user.user_id  
+        print session[user]
+    else:
+        user = User(email=email,password=password)
+        print user
+        db.session.add(user)
+        db.session.commit()
+
+    return redirect("/")
+
 
 
 if __name__ == "__main__":
